@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "removeComments": true,
+    "newLine": "lf",
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "lib": [
+      "ESNext"
+    ],
+    "types": ["node", "pg"],
+    "rootDir": "src",
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+  },
+  "include": ["src/**/*.ts"],
+}
