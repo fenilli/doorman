@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { FileMigrationProvider, Migrator } from "kysely/migration";
 
 import { createDatabase } from "../index.js";
@@ -23,7 +23,10 @@ export function createMigrator(): { migrator: Migrator, destroy: () => Promise<v
     db,
     provider: new FileMigrationProvider({
       fs,
-      path,
+      path: {
+        ...path,
+        join: (...args) => pathToFileURL(path.join(...args)).toString(),
+      },
       migrationFolder
     })
   });
