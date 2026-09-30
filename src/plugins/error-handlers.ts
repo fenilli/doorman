@@ -43,10 +43,15 @@ export const errorHandlersPlugin = fp(async (app) => {
     });
   });
 
-  app.setNotFoundHandler((_, reply) => {
+  app.setNotFoundHandler({
+    preHandler: app.rateLimit({
+      max: 3,
+      timeWindow: 500,
+    })
+  }, (_, reply) => {
     return reply.status(404).send({
       message: "The requested resource was not found.",
       code: "NOT_FOUND",
     })
   });
-}, { name: "error-handler-plugin" });
+}, { name: "error-handler-plugin", dependencies: ["rate-limit-plugin"] });

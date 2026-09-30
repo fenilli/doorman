@@ -7,6 +7,9 @@ const EnvSchema = Type.Object({
   HOST: Type.String({ default: "0.0.0.0" }),
   PORT: Type.Number({ default: 3000, minimum: 1, maximum: 65535 }),
 
+  RATE_LIMIT_MAX: Type.Number({ default: 100, minimum: 1 }),
+  RATE_LIMIT_TIME_WINDOW: Type.String({ default: "1 min" }),
+
   DB_HOST: Type.String({ default: "localhost" }),
   DB_PORT: Type.Number({ default: 5432 }),
   DB_NAME: Type.String({ default: "doorman_db" }),

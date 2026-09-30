@@ -6,8 +6,10 @@ import { formbodyPlugin } from "./formbody.js";
 import { cookiePlugin } from "./cookie.js";
 import { dbPlugin } from "./db.js";
 import { keysPlugin } from "./keys.js";
+import { rateLimitPlugin } from "./rate-limit.js";
 
 export const plugins = fp(async (app) => {
+  await app.register(rateLimitPlugin);
   await app.register(sensiblePlugin);
   await app.register(errorHandlersPlugin);
   await app.register(formbodyPlugin);

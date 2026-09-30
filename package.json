@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "tsx watch --env-file .env src/server.ts",
     "db:migrate": "tsx --env-file .env src/commands/db/migrate.ts",
-    "make:migration": "tsx --env-file .env src/commands/make/migration.ts",
+    "make:migration": "tsx src/commands/make/migration.ts",
     "keys:rotate": "tsx --env-file .env src/commands/keys/rotate.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^11.1.2",
     "@fastify/formbody": "^9.0.0",
+    "@fastify/rate-limit": "^11.2.0",
     "@fastify/sensible": "^6.0.6",
     "@fastify/type-provider-typebox": "^6.1.0",
     "argon2": "^0.45.1",

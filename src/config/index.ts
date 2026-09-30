@@ -8,6 +8,11 @@ interface ServerConfig {
   logger: FastifyServerOptions["logger"];
 }
 
+interface RateLimitConfig {
+  max: Env["RATE_LIMIT_MAX"];
+  timeWindow: Env["RATE_LIMIT_TIME_WINDOW"];
+}
+
 interface DatabaseConfig {
   url: `postgres://${Env["DB_USER"]}:${Env["DB_PASSWORD"]}@${Env["DB_HOST"]}:${Env["DB_PORT"]}/${Env["DB_NAME"]}`;
 }
@@ -24,6 +29,7 @@ interface CookieConfig {
 export interface Config {
   env: Env["NODE_ENV"];
   server: ServerConfig;
+  rateLimit: RateLimitConfig;
   database: DatabaseConfig;
   oidc: OIDCConfig;
   cookie: CookieConfig;
@@ -67,6 +73,13 @@ const parseServerConfig = (env: Env): ServerConfig => {
   };
 };
 
+const parseRateLimitConfig = (env: Env): RateLimitConfig => {
+  return {
+    max: env.RATE_LIMIT_MAX,
+    timeWindow: env.RATE_LIMIT_TIME_WINDOW,
+  };
+};
+
 const parseDatabaseConfig = (env: Env): DatabaseConfig => {
   const url = `postgres://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME}` as const;
 
@@ -96,6 +109,7 @@ export const createConfig = (env: NodeJS.ProcessEnv = process.env): Config => {
   return {
     env: parsed.NODE_ENV,
     server: parseServerConfig(parsed),
+    rateLimit: parseRateLimitConfig(parsed),
     database: parseDatabaseConfig(parsed),
     oidc: parseOIDCConfig(parsed),
     cookie: parseCookieConfig(parsed),
