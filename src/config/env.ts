@@ -12,6 +12,10 @@ const EnvSchema = Type.Object({
   DB_NAME: Type.String({ default: "doorman_db" }),
   DB_USER: Type.String({ default: "doorman_user" }),
   DB_PASSWORD: Type.String(),
+
+  OIDC_ISSUER: Type.String({ format: "url" }),
+
+  COOKIE_SECRET: Type.String({ minLength: 32 }),
 });
 
 export type Env = Static<typeof EnvSchema>;

@@ -12,10 +12,21 @@ interface DatabaseConfig {
   url: `postgres://${Env["DB_USER"]}:${Env["DB_PASSWORD"]}@${Env["DB_HOST"]}:${Env["DB_PORT"]}/${Env["DB_NAME"]}`;
 }
 
+interface OIDCConfig {
+  issuer: Env["OIDC_ISSUER"];
+}
+
+interface CookieConfig {
+  secret: Env["COOKIE_SECRET"];
+  secure: boolean;
+}
+
 export interface Config {
   env: Env["NODE_ENV"];
   server: ServerConfig;
   database: DatabaseConfig;
+  oidc: OIDCConfig;
+  cookie: CookieConfig;
 };
 
 const parseServerConfig = (env: Env): ServerConfig => {
@@ -64,6 +75,21 @@ const parseDatabaseConfig = (env: Env): DatabaseConfig => {
   };
 };
 
+const parseOIDCConfig = (env: Env): OIDCConfig => {
+  const issuer = env.OIDC_ISSUER.replace(/\/+$/, "");
+
+  return {
+    issuer,
+  }
+};
+
+const parseCookieConfig = (env: Env): CookieConfig => {
+  return {
+    secret: env.COOKIE_SECRET,
+    secure: env.OIDC_ISSUER.startsWith("https://"),
+  }
+};
+
 export const createConfig = (env: NodeJS.ProcessEnv = process.env): Config => {
   const parsed = parseEnv(env);
 
@@ -71,5 +97,7 @@ export const createConfig = (env: NodeJS.ProcessEnv = process.env): Config => {
     env: parsed.NODE_ENV,
     server: parseServerConfig(parsed),
     database: parseDatabaseConfig(parsed),
+    oidc: parseOIDCConfig(parsed),
+    cookie: parseCookieConfig(parsed),
   };
 }
