@@ -7,6 +7,7 @@ import { cookiePlugin } from "./cookie.js";
 import { dbPlugin } from "./db.js";
 import { keysPlugin } from "./keys.js";
 import { rateLimitPlugin } from "./rate-limit.js";
+import { viewPlugin } from "./view.js";
 
 export const plugins = fp(async (app) => {
   await app.register(rateLimitPlugin);
@@ -16,4 +17,5 @@ export const plugins = fp(async (app) => {
   await app.register(cookiePlugin);
   await app.register(dbPlugin);
   await app.register(keysPlugin);
+  await app.register(viewPlugin);
 });
