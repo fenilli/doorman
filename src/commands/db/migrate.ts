@@ -1,19 +1,9 @@
 import { type MigrationResultSet, Migrator, NO_MIGRATIONS } from "kysely/migration";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { createConfig } from "@/config/index.js";
 import { createDatabase } from "@/database/index.js";
 import { FileMigrationProvider } from "./file-migration-provider.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const __source = path.resolve(__dirname, "../..");
-
-const migrationsFolder = path.join(
-  __source,
-  "database/migrations"
-);
+import { migrationsFolder } from "../utils/paths.js";
 
 type Command =
   | "up"

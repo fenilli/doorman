@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "tsx watch --env-file .env src/server.ts",
-    "db:migrate": "tsx --env-file .env src/commands/db/migrate.ts"
+    "db:migrate": "tsx --env-file .env src/commands/db/migrate.ts",
+    "make:migration": "tsx --env-file .env src/commands/make/migration.ts"
   },
   "dependencies": {
     "@fastify/sensible": "^6.0.6",
