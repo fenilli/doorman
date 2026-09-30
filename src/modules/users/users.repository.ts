@@ -29,4 +29,14 @@ export class UserRepository {
       .where("id", "=", id)
       .executeTakeFirst();
   }
+
+
+
+  async updatePasswordHash(id: string, passwordHash: string): Promise<void> {
+    await this.db
+      .updateTable("users")
+      .set({ password_hash: passwordHash, updated_at: new Date() })
+      .where("id", "=", id)
+      .execute();
+  }
 }

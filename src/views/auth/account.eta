@@ -1,0 +1,3 @@
+<h1>Signed in</h1>
+<p><%= it.name ?? it.email %><br><small><%= it.email %></small></p>
+<form method="post" action="/logout"><button type="submit">Sign out</button></form>

@@ -1,6 +1,5 @@
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 
-import { KeysService } from "./keys.service.js";
 import { JwksResponse } from "./keys.schemas.js";
 
 export const keysRoutes: FastifyPluginAsyncTypebox = async (app) => {
