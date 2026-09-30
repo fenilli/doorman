@@ -14,7 +14,7 @@ export const CreateUserResponse = {
   201: Type.Object({
     id: Type.String(),
     email: Type.String({ format: "email" }),
-    name: Type.Union([Type.String(), Type.Null])
+    name: Type.Union([Type.String(), Type.Null()])
   }),
   409: DomainErrorSchema,
 };
