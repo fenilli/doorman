@@ -15,6 +15,11 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
   const sessions = new SessionsService(app.db);
   const secure = app.config.cookie.secure;
 
+  const render = async (reply: FastifyReply, view: string, data: Record<string, unknown>, status = 200) => {
+    const csrfToken = await reply.generateCsrf();
+    return reply.code(status).viewAsync(view, { ...data, csrfToken });
+  }
+
   app.addHook("onRequest", async (_, reply) => {
     reply
       .cacheControl("no-store")
@@ -43,7 +48,7 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
     if (await currentSession(request)) return reply.redirect(returnTo);
 
-    return reply.viewAsync("auth/login", { title: "Sign in", returnTo });
+    return render(reply, "auth/login", { title: "Sign in", returnTo });
   });
 
   app.post("/login", {
@@ -56,11 +61,11 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
     const returnTo = safeReturnTo(request.body.return_to);
 
     if (request.validationError) {
-      return reply.code(400).viewAsync("auth/login", {
+      return render(reply, "auth/login", {
         title: "Sign in",
         returnTo,
         error: "Enter your email and password"
-      });
+      }, 400);
     }
 
     const { email, password } = request.body;
@@ -72,11 +77,11 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
       return reply.redirect(returnTo);
     } catch (err) {
       if (err instanceof InvalidCredentialsError) {
-        return reply.code(401).viewAsync("auth/login", {
+        return render(reply, "auth/login", {
           title: "Sign in",
           returnTo,
           error: err.message
-        });
+        }, 401);
       }
       throw err;
     }
@@ -91,7 +96,7 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
     if (await currentSession(request)) return reply.redirect(returnTo);
 
-    return reply.viewAsync("auth/register", { title: "Create account", returnTo });
+    return render(reply, "auth/register", { title: "Create account", returnTo });
   });
 
   app.post("/register", {
@@ -104,13 +109,13 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
     const returnTo = safeReturnTo(request.body?.return_to);
 
     if (request.validationError) {
-      return reply.code(400).viewAsync("auth/register", {
+      return render(reply, "auth/register", {
         title: "Create account",
         returnTo,
         email: request.body?.email,
         name: request.body?.name,
         error: "Enter a valid email and a password of 8 to 64 characters.",
-      });
+      }, 400);
     }
 
     const { email, password, name } = request.body;
@@ -122,13 +127,13 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
       return reply.redirect(returnTo);
     } catch (err) {
       if (err instanceof EmailTakenError) {
-        return reply.code(409).viewAsync("auth/register", {
+        return render(reply, "auth/register", {
           title: "Create account",
           returnTo,
           email,
           name,
           error: err.message,
-        });
+        }, 409);
       }
       throw err;
     }

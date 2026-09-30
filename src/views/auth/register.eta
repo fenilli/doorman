@@ -3,6 +3,7 @@
 <p class="error" role="alert"><%= it.error %></p>
 <% } %>
 <form method="post" action="/register">
+  <input type="hidden" name="_csrf" value="<%= it.csrfToken %>">
   <input type="hidden" name="return_to" value="<%= it.returnTo %>">
   <label>Name (optional)
     <input name="name" type="text" value="<%= it.name ?? "" %>" autocomplete="name" maxlength="100">
