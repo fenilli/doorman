@@ -1,22 +1,32 @@
-import { Insertable, Selectable, Updateable } from "kysely";
+import type { Kysely } from "kysely";
 
-import type { UsersTable } from "@/database/tables/users.table.js";
-import type { KyselyDatabase } from "@/database/schema.js";
+import type { Database } from "@/database/schema.js";
+import type { NewUserRow, UserRow } from "@/database/tables/users.table.js";
 
-export type NewUser = Insertable<UsersTable>;
-export type User = Selectable<UsersTable>;
-export type UserUpdate = Updateable<UsersTable>;
+export class UserRepository {
+  constructor(private readonly db: Kysely<Database>) { }
 
-export const createUsersRepository = (db: KyselyDatabase) => ({
-  insert: (user: NewUser) =>
-    db.insertInto("users")
-      .values({ email: user.email, password_hash: user.password_hash, name: user.name })
-      .returning(["id", "email", "name"])
-      .executeTakeFirstOrThrow(),
+  async insert(user: NewUserRow): Promise<UserRow> {
+    return this.db
+      .insertInto("users")
+      .values(user)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+  }
 
-  findByEmail: (email: string) =>
-    db.selectFrom("users").selectAll().where("email", "=", email).executeTakeFirst(),
+  async findByEmail(email: string): Promise<UserRow | undefined> {
+    return this.db
+      .selectFrom("users")
+      .selectAll()
+      .where("email", "=", email)
+      .executeTakeFirst();
+  }
 
-  findById: (id: string) =>
-    db.selectFrom("users").selectAll().where("id", "=", id).executeTakeFirst(),
-});
+  async findById(id: string): Promise<UserRow | undefined> {
+    return this.db
+      .selectFrom("users")
+      .selectAll()
+      .where("id", "=", id)
+      .executeTakeFirst();
+  }
+}

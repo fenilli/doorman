@@ -8,6 +8,11 @@ const startServer = async () => {
 
   const server = fastify({
     logger: config.server.logger,
+    ajv: {
+      customOptions: {
+        allErrors: true
+      }
+    }
   });
 
   await server.register(app, { config });

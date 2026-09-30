@@ -1,5 +1,5 @@
 import type { JWK } from "jose";
-import type { Generated } from "kysely";
+import type { Generated, Insertable, Selectable, Updateable } from "kysely";
 
 export interface SigningKeysTable {
   kid: string;
@@ -10,3 +10,7 @@ export interface SigningKeysTable {
   created_at: Generated<Date>;
   retired_at: Date | null;
 }
+
+export type SigningKeyRow = Selectable<SigningKeysTable>;
+export type NewSigningKeyRow = Insertable<SigningKeysTable>;
+export type SigningKeyRowUpdate = Updateable<SigningKeysTable>;

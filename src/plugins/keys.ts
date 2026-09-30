@@ -1,16 +1,8 @@
 import fp from "fastify-plugin";
 
-import { type KeysService, createKeysService } from "@/modules/keys/keys.service.js";
-
-declare module "fastify" {
-  interface FastifyInstance {
-    keys: KeysService;
-  }
-}
+import { KeysService } from "@/modules/oauth/keys.service.js";
 
 export const keysPlugin = fp(async (app) => {
-  const keys = createKeysService(app.db);
+  const keys = new KeysService(app.db);
   await keys.ensureActive();
-
-  app.decorate("keys", keys);
 }, { name: "keys-plugin", dependencies: ["db-plugin"] });

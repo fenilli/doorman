@@ -13,7 +13,7 @@ const EnvSchema = Type.Object({
   DB_USER: Type.String({ default: "doorman_user" }),
   DB_PASSWORD: Type.String(),
 
-  OIDC_ISSUER: Type.String({ format: "url" }),
+  OIDC_ISSUER: Type.String({ format: "uri" }),
 
   COOKIE_SECRET: Type.String({ minLength: 32 }),
 });

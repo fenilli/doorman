@@ -1,4 +1,4 @@
-import type { Generated } from "kysely";
+import type { Generated, Insertable, Selectable, Updateable } from "kysely";
 
 export interface UsersTable {
   id: Generated<string>;
@@ -9,3 +9,7 @@ export interface UsersTable {
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
+
+export type UserRow = Selectable<UsersTable>;
+export type NewUserRow = Insertable<UsersTable>;
+export type UserRowUpdate = Updateable<UsersTable>;
