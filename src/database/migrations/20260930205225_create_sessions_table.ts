@@ -4,7 +4,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("sessions")
     .addColumn("token_hash", "text", col => col.primaryKey())
-    .addColumn("user_id", "uuid", col => col.notNull().references("user.id").onDelete("cascade"))
+    .addColumn("user_id", "uuid", col => col.notNull().references("users.id").onDelete("cascade"))
     .addColumn("auth_time", "timestamptz", col => col.notNull().defaultTo(sql`now()`))
     .addColumn("expires_at", "timestamptz")
     .addColumn("created_at", "timestamptz", col => col.notNull().defaultTo(sql`now()`))
