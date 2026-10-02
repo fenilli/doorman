@@ -3,8 +3,8 @@ import fastifyStatic from "@fastify/static";
 
 import { PUBLIC_PATH } from "@/config/paths.js";
 
-export const staticPlugin = fp(async (app) => {
-  app.register(fastifyStatic, {
+export const staticPlugin = fp(async (server) => {
+  server.register(fastifyStatic, {
     root: PUBLIC_PATH,
     prefix: "/public/"
   });

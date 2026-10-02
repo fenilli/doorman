@@ -11,15 +11,15 @@ import { viewPlugin } from "./view.js";
 import { csrfPlugin } from "./csrf.js";
 import { staticPlugin } from "./static.js";
 
-export const plugins = fp(async (app) => {
-  await app.register(rateLimitPlugin);
-  await app.register(sensiblePlugin);
-  await app.register(errorHandlersPlugin);
-  await app.register(formbodyPlugin);
-  await app.register(cookiePlugin);
-  await app.register(csrfPlugin);
-  await app.register(dbPlugin);
-  await app.register(keysPlugin);
-  await app.register(staticPlugin);
-  await app.register(viewPlugin);
+export const plugins = fp(async (server) => {
+  await server.register(rateLimitPlugin);
+  await server.register(sensiblePlugin);
+  await server.register(errorHandlersPlugin);
+  await server.register(formbodyPlugin);
+  await server.register(cookiePlugin);
+  await server.register(csrfPlugin);
+  await server.register(dbPlugin);
+  await server.register(keysPlugin);
+  await server.register(staticPlugin);
+  await server.register(viewPlugin);
 });

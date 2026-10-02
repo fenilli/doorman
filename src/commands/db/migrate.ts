@@ -1,6 +1,6 @@
 import { type MigrationResultSet, Migrator, NO_MIGRATIONS } from "kysely/migration";
 
-import { createConfig } from "@/config/index.js";
+import { config } from "@/config/index.js";
 import { MIGRATIONS_PATH } from "@/config/paths.js";
 import { createDatabase } from "@/database/index.js";
 import { FileMigrationProvider } from "./file-migration-provider.js";
@@ -54,7 +54,6 @@ const run = async (command: string | undefined) => {
     return;
   }
 
-  const config = createConfig();
   const db = createDatabase({
     connectionString: config.database.url
   });

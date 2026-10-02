@@ -8,9 +8,9 @@ declare module "fastify" {
   }
 }
 
-export const keysPlugin = fp(async (app) => {
-  const keys = new KeysService(app.db);
+export const keysPlugin = fp(async (server) => {
+  const keys = new KeysService(server.db);
   await keys.ensureActive();
 
-  app.decorate("keys", keys);
+  server.decorate("keys", keys);
 }, { name: "keys-plugin", dependencies: ["db-plugin"] });

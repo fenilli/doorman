@@ -1,5 +1,6 @@
 import fp from "fastify-plugin";
 
+import { config } from "@/config/index.js";
 import { createDatabase } from "@/database/index.js";
 
 declare module "fastify" {
@@ -8,14 +9,14 @@ declare module "fastify" {
   }
 }
 
-export const dbPlugin = fp((app) => {
+export const dbPlugin = fp((server) => {
   const db = createDatabase({
-    connectionString: app.config.database.url,
+    connectionString: config.database.url,
   });
 
-  app.decorate("db", db);
+  server.decorate("db", db);
 
-  app.addHook("onClose", async (instance) => {
+  server.addHook("onClose", async (instance) => {
     await instance.db.destroy();
   });
 }, { name: "db-plugin" });

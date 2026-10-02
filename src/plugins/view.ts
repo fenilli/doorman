@@ -2,11 +2,12 @@ import fp from "fastify-plugin";
 import view from "@fastify/view";
 import { Edge } from "edge.js";
 
+import { config } from "@/config/index.js";
 import { SRC_URL } from "@/config/paths.js";
 
-export const viewPlugin = fp(async (app) => {
-  const edge = new Edge({ cache: app.config.env === "production" });
+export const viewPlugin = fp(async (server) => {
+  const edge = new Edge({ cache: config.app.env === "production" });
   edge.mount(new URL("views/", SRC_URL));
 
-  app.register(view, { engine: { edge } });
+  server.register(view, { engine: { edge } });
 }, { name: "view-plugin" });

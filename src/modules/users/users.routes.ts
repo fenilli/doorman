@@ -3,10 +3,10 @@ import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { UsersService } from "./users.service.js";
 import { CreateUserBody, CreateUserResponse } from "./users.schemas.js";
 
-export const usersRoutes: FastifyPluginAsyncTypebox = async (app) => {
-  const service = new UsersService(app.db);
+export const usersRoutes: FastifyPluginAsyncTypebox = async (server) => {
+  const service = new UsersService(server.db);
 
-  app.post("/", {
+  server.post("/", {
     schema: {
       body: CreateUserBody,
       response: CreateUserResponse,

@@ -1,6 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 
+import { config } from "@/config/index.js";
 import { UsersService } from "@/modules/users/users.service.js";
 import { EmailTakenError, InvalidCredentialsError } from "@/modules/users/users.errors.js";
 import { SessionsService } from "./sessions.service.js";
@@ -10,17 +11,19 @@ import { safeReturnTo } from "./auth.redirects.js";
 
 const formRateLimit = { rateLimit: { max: 10, timeWindow: "1 min" } };
 
-export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
-  const users = new UsersService(app.db);
-  const sessions = new SessionsService(app.db);
-  const secure = app.config.cookie.secure;
+const url = (url: string) => new URL(url, config.app.url);
+
+export const authRoutes: FastifyPluginAsyncTypebox = async (server) => {
+  const users = new UsersService(server.db);
+  const sessions = new SessionsService(server.db);
+  const secure = config.cookie.secure;
 
   const render = async (reply: FastifyReply, view: string, data: Record<string, unknown>, status = 200) => {
     const csrfToken = reply.generateCsrf();
     return reply.code(status).viewAsync(view, { ...data, csrfToken });
   }
 
-  app.addHook("onRequest", async (_, reply) => {
+  server.addHook("onRequest", async (_, reply) => {
     reply
       .cacheControl("no-store")
       .header("content-security-policy", "default-src 'none'; style-src 'self'; frame-ancestors 'none'; base-uri 'none'");
@@ -39,7 +42,7 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
     setSessionCookie(reply, token, expiresAt, secure);
   };
 
-  app.get("/login", {
+  server.get("/login", {
     schema: {
       querystring: ReturnToQuery
     }
@@ -48,10 +51,10 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
     if (await currentSession(request)) return reply.redirect(returnTo);
 
-    return render(reply, "auth/login", { title: "Sign in", returnTo });
+    return render(reply, "auth/login", { title: "Sign in", returnTo, registerUrl: url("register") });
   });
 
-  app.post("/login", {
+  server.post("/login", {
     schema: {
       body: LoginBody
     },
@@ -80,14 +83,15 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
         return render(reply, "auth/login", {
           title: "Sign in",
           returnTo,
-          error: err.message
+          error: err.message,
+          registerUrl: url("register")
         }, 401);
       }
       throw err;
     }
   });
 
-  app.get("/register", {
+  server.get("/register", {
     schema: {
       querystring: ReturnToQuery
     }
@@ -96,10 +100,10 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
     if (await currentSession(request)) return reply.redirect(returnTo);
 
-    return render(reply, "auth/register", { title: "Create account", returnTo });
+    return render(reply, "auth/register", { title: "Create account", returnTo, loginUrl: url("login") });
   });
 
-  app.post("/register", {
+  server.post("/register", {
     schema: {
       body: RegisterBody
     },
@@ -115,6 +119,7 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
         email: request.body?.email,
         name: request.body?.name,
         error: "Enter a valid email and a password of 8 to 64 characters.",
+        loginUrl: url("login")
       }, 400);
     }
 
@@ -133,13 +138,14 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
           email,
           name,
           error: err.message,
+          loginUrl: url("login"),
         }, 409);
       }
       throw err;
     }
   });
 
-  app.post("/logout", async (request, reply) => {
+  server.post("/logout", async (request, reply) => {
     const token = readSessionToken(request);
     if (token) await sessions.destroy(token);
 
@@ -148,7 +154,7 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
     return reply.redirect("/login");
   });
 
-  app.get("/account", async (request, reply) => {
+  server.get("/account", async (request, reply) => {
     const session = await currentSession(request);
     if (!session) return reply.redirect("/login?return_to=/account");
 

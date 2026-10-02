@@ -3,8 +3,8 @@ import fp from "fastify-plugin";
 
 import { DomainError } from "@/core/errors.js";
 
-export const errorHandlersPlugin = fp(async (app) => {
-  app.setErrorHandler((error: FastifyError | DomainError | Error, request, reply) => {
+export const errorHandlersPlugin = fp(async (server) => {
+  server.setErrorHandler((error: FastifyError | DomainError | Error, request, reply) => {
     if ("validation" in error && error.validation) {
       const violations = error.validation.map(v => ({
         field: v.instancePath ? v.instancePath.replace(/^\//, "") : v.params.missingProperty || "",
@@ -43,8 +43,8 @@ export const errorHandlersPlugin = fp(async (app) => {
     });
   });
 
-  app.setNotFoundHandler({
-    preHandler: app.rateLimit({
+  server.setNotFoundHandler({
+    preHandler: server.rateLimit({
       max: 3,
       timeWindow: 500,
     })

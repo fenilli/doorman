@@ -1,13 +1,11 @@
 import fastify from "fastify";
 
 import { app } from "./app.js";
-import { createConfig } from "./config/index.js";
+import { config } from "./config/index.js";
 
 const startServer = async () => {
-  const config = createConfig();
-
   const server = fastify({
-    logger: config.server.logger,
+    logger: config.log,
     ajv: {
       customOptions: {
         allErrors: true
@@ -15,7 +13,7 @@ const startServer = async () => {
     }
   });
 
-  await server.register(app, { config });
+  await server.register(app);
   await server.listen({ port: config.server.port, host: config.server.host });
 
   const shutdown = async () => {

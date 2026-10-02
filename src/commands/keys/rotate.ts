@@ -1,9 +1,8 @@
-import { createConfig } from "@/config/index.js";
+import { config } from "@/config/index.js";
 import { createDatabase } from "@/database/index.js";
 import { KeysService } from "@/modules/oauth/keys.service.js";
 
 const run = async () => {
-  const config = createConfig();
   const db = createDatabase({
     connectionString: config.database.url
   });
