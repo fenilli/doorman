@@ -1,7 +1,6 @@
 import { createConfig } from "@/config/index.js";
 import { createDatabase } from "@/database/index.js";
-import { createKeysService } from "@/modules/keys/keys.service.js";
-
+import { KeysService } from "@/modules/oauth/keys.service.js";
 
 const run = async () => {
   const config = createConfig();
@@ -9,8 +8,10 @@ const run = async () => {
     connectionString: config.database.url
   });
 
+  const service = new KeysService(db);
+
   try {
-    const kid = await createKeysService(db).rotate();
+    const kid = await service.rotate();
     console.log(`rotated: new active key ${kid}`);
   } finally {
     await db.destroy();
