@@ -16,14 +16,14 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (app) => {
   const secure = app.config.cookie.secure;
 
   const render = async (reply: FastifyReply, view: string, data: Record<string, unknown>, status = 200) => {
-    const csrfToken = await reply.generateCsrf();
+    const csrfToken = reply.generateCsrf();
     return reply.code(status).viewAsync(view, { ...data, csrfToken });
   }
 
   app.addHook("onRequest", async (_, reply) => {
     reply
       .cacheControl("no-store")
-      .header("content-security-policy", "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'");
+      .header("content-security-policy", "default-src 'none'; style-src 'self'; frame-ancestors 'none'; base-uri 'none'");
   });
 
   const currentSession = async (request: FastifyRequest) => {

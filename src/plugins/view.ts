@@ -1,13 +1,12 @@
-import path from "node:path"
 import fp from "fastify-plugin";
 import view from "@fastify/view";
-import { Eta } from "eta";
+import { Edge } from "edge.js";
+
+import { SRC_URL } from "@/config/paths.js";
 
 export const viewPlugin = fp(async (app) => {
-  app.register(view, {
-    engine: { eta: new Eta() },
-    root: path.join(import.meta.dirname, "../views"),
-    layout: "layout.eta",
-    includeViewExtension: true,
-  });
+  const edge = new Edge({ cache: app.config.env === "production" });
+  edge.mount(new URL("views/", SRC_URL));
+
+  app.register(view, { engine: { edge } });
 }, { name: "view-plugin" });

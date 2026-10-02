@@ -9,6 +9,7 @@ import { keysPlugin } from "./keys.js";
 import { rateLimitPlugin } from "./rate-limit.js";
 import { viewPlugin } from "./view.js";
 import { csrfPlugin } from "./csrf.js";
+import { staticPlugin } from "./static.js";
 
 export const plugins = fp(async (app) => {
   await app.register(rateLimitPlugin);
@@ -19,5 +20,6 @@ export const plugins = fp(async (app) => {
   await app.register(csrfPlugin);
   await app.register(dbPlugin);
   await app.register(keysPlugin);
+  await app.register(staticPlugin);
   await app.register(viewPlugin);
 });
