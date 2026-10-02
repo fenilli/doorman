@@ -1,8 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { migrationsFolder } from "../utils/paths.js";
-import { dedent } from "../utils/utils.js";
+import { SRC_URL } from "@/config/paths.js";
+import { dedent } from "@/utils/dedent.js";
+
+const MIGRATIONS_PATH = fileURLToPath(new URL("database/migrations/", SRC_URL));
 
 const template = dedent`
   import type { Kysely } from "kysely"
@@ -30,8 +33,8 @@ const run = async (args: string[]) => {
   const timestamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14);
   const filename = `${timestamp}_${name}.ts`;
 
-  await fs.mkdir(migrationsFolder, { recursive: true });
-  await fs.writeFile(path.join(migrationsFolder, filename), `${template}\n`, { flag: "wx" });
+  await fs.mkdir(MIGRATIONS_PATH, { recursive: true });
+  await fs.writeFile(path.join(MIGRATIONS_PATH, filename), `${template}\n`, { flag: "wx" });
 
   console.log(`created: database/migrations/${filename}`);
 };
