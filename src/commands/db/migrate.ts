@@ -1,12 +1,9 @@
-import { fileURLToPath } from "node:url";
 import { type MigrationResultSet, Migrator, NO_MIGRATIONS } from "kysely/migration";
 
 import { createConfig } from "@/config/index.js";
-import { SRC_URL } from "@/config/paths.js";
+import { MIGRATIONS_PATH } from "@/config/paths.js";
 import { createDatabase } from "@/database/index.js";
 import { FileMigrationProvider } from "./file-migration-provider.js";
-
-const MIGRATIONS_PATH = fileURLToPath(new URL("database/migrations/", SRC_URL));
 
 type Command =
   | "up"

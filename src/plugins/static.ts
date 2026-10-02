@@ -1,10 +1,7 @@
 import fp from "fastify-plugin";
 import fastifyStatic from "@fastify/static";
-import { fileURLToPath } from "node:url";
 
-import { SRC_URL } from "@/config/paths.js";
-
-const PUBLIC_PATH = fileURLToPath(new URL("public/", SRC_URL));
+import { PUBLIC_PATH } from "@/config/paths.js";
 
 export const staticPlugin = fp(async (app) => {
   app.register(fastifyStatic, {

@@ -1,11 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-import { SRC_URL } from "@/config/paths.js";
+import { MIGRATIONS_PATH } from "@/config/paths.js";
 import { dedent } from "@/utils/dedent.js";
-
-const MIGRATIONS_PATH = fileURLToPath(new URL("database/migrations/", SRC_URL));
 
 const template = dedent`
   import type { Kysely } from "kysely"
